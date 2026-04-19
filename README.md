@@ -1,8 +1,9 @@
 # Godot Shared Components
 
-This repository is a collection of shared components and data structures for use across multiple Godot projects.
+This repository is a collection of shared components and data structures for use across multiple Godot projects, developed on and works on Godot 4.6, minimum version Godot 4.5.
 
 **NOTE** This library is currently in early development so all classes are subject to change, since it is on git you can restore an older version if needed for your codebase
+
 
 ## Addon Path
 
