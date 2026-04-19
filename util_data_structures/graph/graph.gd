@@ -38,7 +38,7 @@ func add_edge(v1 : Node, v2: Node, bidirectional: bool = true) -> void:
 	#
 ## Gets the list of neighbors for a node	
 func get_neighbors(vertex : Node) -> Array[Node]:
-	return adjacency_list.get(vertex, []) as Array[Node]
+	return adjacency_list.get(vertex, []).duplicate() as Array[Node]
 
 
 ## Returns the set of all nodes that are within max_depth of start
