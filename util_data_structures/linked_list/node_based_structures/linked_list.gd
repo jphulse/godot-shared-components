@@ -1,4 +1,4 @@
-class_name LinkedList extends RefCounted
+class_name NodeLinkedList extends RefCounted
 
 #region Internal fields
 var length : int = 0
@@ -291,5 +291,19 @@ func count(node : Node) -> int:
 ## Checks if the list is empty.
 func is_empty() -> bool:
 	return length == 0
+
+
+## Removes the link from the list safely
+func remove_link(link: LinkedNode) -> Node:
+	if link == null:
+		return null
+
+	var ret_val: Node = link.node
+	_remove_node(link)
+	return ret_val
+
+## Returns true if the list has the node, false otherwise
+func contains(node: Node) -> bool:
+	return node_dict.has(node)
 
 #endregion

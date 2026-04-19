@@ -1,7 +1,7 @@
 class_name NodeStack
 extends RefCounted
 
-var _list := LinkedList.new()
+var _list := NodeLinkedList.new()
 
 ## Pushes a node to the top of the stack
 func push(node: Node) -> void:
