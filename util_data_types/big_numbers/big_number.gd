@@ -100,8 +100,7 @@ func add(other: BigNumber) -> BigNumber:
 func subtract(other: BigNumber) -> BigNumber:
 	return add(other.negated())
 
-func multiply_float(other : float) -> BigNumber:
-	return BigNumber.from_float(other)
+
 	
 
 func multiply(other: BigNumber) -> BigNumber:
@@ -114,8 +113,7 @@ func multiply(other: BigNumber) -> BigNumber:
 	)
 
 
-func divide_float(other : float) -> BigNumber:
-	return divide(BigNumber.from_float(other))
+
 func divide(other: BigNumber) -> BigNumber:
 	assert(not other.is_zero(), "Cannot divide BigNumber by zero.")
 
@@ -270,6 +268,7 @@ func to_short_string(decimal_places: int = 2) -> String:
 		return _trim_trailing_zeroes(format_suffix % display_value) + suffixes[suffix_index]
 
 	return to_scientific_string(decimal_places)
+
 func _to_string() -> String:
 	return to_short_string()
 
