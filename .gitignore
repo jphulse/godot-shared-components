@@ -11,6 +11,6 @@ export_credentials.cfg
 *.translation
 
 # Mono-specific ignores
-.mono/
-data_*/
-mono_crash.*.json
+# .mono/
+# data_*/
+# mono_crash.*.json
