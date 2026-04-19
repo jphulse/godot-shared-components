@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://byxjy18dv0rgv"]
 
-[ext_resource type="Script" uid="uid://bm503kvx4j8u7" path="res://components/hurtbox_component/hurtbox_component.gd" id="1_n7cp8"]
+[ext_resource type="Script" uid="uid://qps4cg3eg18r" path="res://addons/jeremy_components/components/hurtbox_component/hurtbox_component.gd" id="1_gqwp1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u2scj"]
 
 [node name="HurtboxComponent" type="Area2D" unique_id=165155388]
-script = ExtResource("1_n7cp8")
+script = ExtResource("1_gqwp1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=114397438]
 shape = SubResource("CircleShape2D_u2scj")
