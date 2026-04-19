@@ -2,6 +2,8 @@
 
 This repository is a collection of shared components and data structures for use across multiple Godot projects.
 
+**NOTE** This library is currently in early development so all classes are subject to change, since it is on git you can restore an older version if needed for your codebase
+
 ## Addon Path
 
 This repository is intended to be added to Godot projects at:
