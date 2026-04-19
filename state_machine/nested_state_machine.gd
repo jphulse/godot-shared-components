@@ -5,16 +5,22 @@ class_name NestedStateMachine extends State
 @export var initial_state :State = null
 @export var reset_state : bool = true
 
+@export_group("Nested State machine info")
+@export var allow_inactive_standard_transitions : bool = false
+@export var allow_inactive_emergency_transitions : bool = true
+
 var states : Dictionary[StringName, State] = {}
 var current_state : State = null
 var active : bool = false
+var emergency_transition_queued : bool = false
 
 func enter() -> void:
 	active = true
-	if reset_state or current_state == null:
+	if (reset_state or current_state == null) and not emergency_transition_queued:
 		current_state = initial_state
 	if current_state != null:
 		current_state.enter()
+		emergency_transition_queued = false
 		
 func exit() -> void:
 	active = false
@@ -64,28 +70,42 @@ func physics_update(delta : float) -> void:
 # and enter the new state if applicable, does not allow for other states to take control away from 
 # another, instead makes it a smooth handoff from current to next
 func on_state_transition(caller : State, new_state_id: StringName) -> void:
-	if (caller != current_state and current_state) or not active:
+	if current_state != null and caller != current_state:
 		return
-	var new_state :State = states.get(new_state_id.to_lower())
+
+	if not active:
+		if not allow_inactive_standard_transitions:
+			return
+		if reset_state:
+			push_warning("Inactive standard transition ignored because reset_state is true. Use an emergency transition if this transition must survive reset.")
+			return
+
+	var new_state : State = states.get(new_state_id.to_lower())
+
 	if not new_state:
 		push_warning("No state found in transition from state with id [%s] and scene name [%s], looking to switch to scene with id [%s]" % [caller.state_id, caller.name, new_state_id])
 		return
-	if current_state:
+
+	if current_state and active:
 		current_state.exit()
+
 	current_state = new_state
-	new_state.enter()
+
+	if active:
+		new_state.enter()
 
 # When we exit the tree call the exit function on the current_state first for smoother cleanup
 func _exit_tree() -> void:
-	if current_state:
+	if current_state and active:
 		current_state.exit()
 
 
 func on_state_emergency_transition(caller : State, new_state_id: StringName) -> void:
 	
 	var new_state :State = states.get(new_state_id.to_lower())
-	if not active:
-		push_warning("Performing an emergency transition while this state machine is not active")
+	if not active and not allow_inactive_emergency_transitions:
+		push_warning("Tried an emergency transition while this state machine is not active, and allow_inactive_emergency_transitions was false, transition ignored")
+		return
 	if not new_state:
 		push_warning("No state found in transition from state with id [%s] and scene name [%s], looking to switch to scene with id [%s]" % [caller.state_id, caller.name, new_state_id])
 		return
@@ -94,3 +114,5 @@ func on_state_emergency_transition(caller : State, new_state_id: StringName) -> 
 	current_state = new_state
 	if active:
 		new_state.enter()
+	else:
+		emergency_transition_queued = true
