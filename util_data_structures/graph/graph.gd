@@ -19,8 +19,9 @@ func add_vertex(object : Node) -> void:
 	assert(object != null)
 	if not adjacency_list.has(object):
 		adjacency_list[object] = [] as Array[Node]
-	if not object.tree_exiting.is_connected(_on_graph_node_exit.bind(object)):
-		object.tree_exiting.connect(_on_graph_node_exit.bind(object))
+	var exit_callable : Callable = _on_graph_node_exit.bind(object)
+	if not object.tree_exiting.is_connected(exit_callable):
+		object.tree_exiting.connect(exit_callable)
 	
 ## Adds an edge between two node, adds the nodes if needed, also by default adds bidirectionally,
 ## if bidirectional is false the edge will be from v1 -> v2 otherwise will add v1 <-> v2
@@ -88,6 +89,14 @@ func _get_node_label(node : Node) -> String:
 func remove_random_vertex() -> void:
 	assert(adjacency_list.size() >= 1)
 	remove_vertex(adjacency_list.keys().pick_random())
+
+## Removes an edge between v1 and v2, if bidirectional removes both sides
+func remove_edge(v1 : Node, v2 : Node, bidirectional : bool = true) -> void:
+	if adjacency_list.has(v1):
+		adjacency_list[v1].erase(v2)
+
+	if bidirectional and adjacency_list.has(v2):
+		adjacency_list[v2].erase(v1)
 
 
 func _to_string() -> String:
