@@ -8,7 +8,7 @@ var node_dict : Dictionary[Node, Array] = {}
 #endregion
 
 #region Private helper methods
-func _remove_node(node : LinkedNode) -> void:
+func _remove_node(node : LinkedNode, all : bool = true) -> void:
 	assert(node != null)
 	if node.prev:
 		node.prev.next = node.next
@@ -19,9 +19,12 @@ func _remove_node(node : LinkedNode) -> void:
 	if node == tail:
 		tail = tail.prev 
 	length -= 1
-	node_dict[node.node].erase(node)
-	if node_dict[node.node].is_empty():
-			node_dict.erase(node.node)
+	if all:
+		node_dict.erase(node.node)
+	else:
+		node_dict[node.node].erase(node)
+		if node_dict[node.node].is_empty():
+				node_dict.erase(node.node)
 	node.free()
 	
 func _to_string() -> String:
@@ -48,12 +51,13 @@ func append(node: Node) -> void:
 	var link : LinkedNode = LinkedNode.new(node)
 	if head == null:
 		head = link
-	if tail != null:
+		tail = link
+	else :
 		link.next = tail.next # should be null but this supports circular lists
 		tail.next = link
+		link.prev = tail
 		tail = link
-	else:
-		tail = link
+	
 	if node_dict.has(node) :
 		node_dict[node].append(link)
 	else:
@@ -76,7 +80,7 @@ func get_linked_node(from_front : bool = true) -> LinkedNode:
 
 ## Gets the linked node from a given index Allows for external list manipulation
 func get_linked_node_from_index(index : int = 0) ->  LinkedNode:
-	if index >= length:
+	if index >= length or index < 0:
 		return null
 	var current : LinkedNode = head
 	var current_index : int = 0
@@ -104,6 +108,8 @@ func pop_front() -> Node:
 	if length == 1:
 		tail = null
 	var link : LinkedNode = head
+	if head.next != null:
+		head.next.prev = head.prev
 	head = head.next
 	length -= 1
 	var ret_val : Node = link.node
@@ -118,6 +124,8 @@ func pop_back() -> Node:
 	if length == 1:
 		head = null
 	var link : LinkedNode = tail
+	if tail.prev != null:
+		tail.prev.next = tail.next
 	tail = tail.prev
 	length -= 1
 	var ret_val : Node = link.node
@@ -133,7 +141,7 @@ func back() -> Node:
 	return tail.node if tail else null
 
 ## removes the node from the provided index, the list is 0 indexed
-func remove(idx : int) -> Node:
+func remove(idx : int, all : bool = false) -> Node:
 	if idx < 0 or idx >= length:
 		return null
 	if idx == 0:
@@ -146,7 +154,7 @@ func remove(idx : int) -> Node:
 	while(current and current_idx < length):
 		if idx == current_idx:
 			var ret_val : Node = current.node
-			_remove_node(current)
+			_remove_node(current, all)
 			return ret_val
 		current = current.next
 		current_idx += 1
@@ -159,12 +167,7 @@ func size() -> int:
 ## Removes a given node from the list	
 func erase(node : Node, all : bool = true) -> void:
 	if node_dict.has(node):
-		if all:
-			for link : LinkedNode in node_dict[node]:
-				_remove_node(link)
-			node_dict[node].clear()
-		else:
-			_remove_node(node_dict[node].front())
+		_remove_node(node_dict[node].front(), all)
 		
 	
 
@@ -192,6 +195,7 @@ func push_front(node : Node) -> void:
 	var link : LinkedNode = LinkedNode.new(node)
 	link.prev = head.prev
 	link.next = head
+	head.prev = link
 	head = link
 	length += 1
 	if node_dict.has(node):
@@ -207,11 +211,15 @@ func to_array(from_front: bool = true) -> Array[Node]:
 
 ## Picks a random node
 func pick_random() -> Node:
+	if is_empty():
+		return null
 	var idx : int = randi_range(0, length - 1)
 	return get_linked_node_from_index(idx).node
 
 ## Clears the list
 func clear() -> void:
+	if is_circular():
+		tail.next = null
 	while(head):
 		_remove_node(head)
 
