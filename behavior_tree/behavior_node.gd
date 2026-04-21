@@ -1,5 +1,5 @@
 class_name BehaviorNode
-extends RefCounted
+extends Node
 
 var parent : BehaviorNode = null
 enum Status {
@@ -15,9 +15,9 @@ func tick(actor : Node, blackboard : Dictionary) -> Status:
 func reset() -> void:
 	pass
 
-func swap_child(old_child : BehaviorNode, new_child : BehaviorNode, append_child_to_composite_if_not_found : bool = false) -> void:
+func swap_child(old_child : BehaviorNode, new_child : BehaviorNode, append_child_to_composite_if_not_found : bool = false, free_orphaned_nodes : bool = true) -> BehaviorNode:
 	push_warning("swap_child() called on a BehaviorNode that does not support children.")
-
+	return null
 
 func add_decorator(decorator : BTDecorator) -> void:
 	assert(decorator != null, "Tried to add a null decorator")

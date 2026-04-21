@@ -29,6 +29,10 @@ func _ready() -> void:
 		actor = get_node_or_null(actor_path)
 	else :
 		actor = owner if owner else get_parent()
+	for child in get_children():
+		if child is BehaviorNode:
+			set_root(child)
+			break
 
 func _process(delta: float) -> void:
 	if tickmode == TickMode.PROCESS:

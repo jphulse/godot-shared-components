@@ -4,7 +4,7 @@ extends BTMemoryComposite
 
 ## Random selector that shuffles children if there is not currently a running_child in memory
 func tick(actor : Node, blackboard : Dictionary) -> Status:
-	if children.is_empty():
+	if behavior_children.is_empty():
 		return Status.FAILURE
 
 	if running_child != null:
@@ -16,7 +16,7 @@ func tick(actor : Node, blackboard : Dictionary) -> Status:
 		running_child = null
 		return running_result
 
-	var shuffled_children : Array[BehaviorNode] = children.duplicate()
+	var shuffled_children : Array[BehaviorNode] = behavior_children.duplicate()
 	shuffled_children.shuffle()
 
 	for child : BehaviorNode in shuffled_children:

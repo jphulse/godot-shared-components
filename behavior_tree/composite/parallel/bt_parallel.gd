@@ -13,13 +13,13 @@ func _init(_success_threshold : int = 1, _failure_threshold : int = 1) -> void:
 ## Runs all children in order, and returns success or failure based on whether thresholds were exceeded
 ## will prioritize returning success, if neither threshold was met returns running
 func tick(actor : Node, blackboard : Dictionary) -> Status:
-	if children.is_empty():
+	if behavior_children.is_empty():
 		return Status.SUCCESS
 
 	var success_count : int = 0
 	var failure_count : int = 0
 
-	for child : BehaviorNode in children:
+	for child : BehaviorNode in behavior_children:
 		var result : Status = child.tick(actor, blackboard)
 
 		match result:

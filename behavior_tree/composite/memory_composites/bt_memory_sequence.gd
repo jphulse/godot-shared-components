@@ -3,8 +3,8 @@ extends BTMemoryComposite
 
 ## Index based memory sequence that continues from where it left off, otherwise runs like a normal sequence
 func tick(actor : Node, blackboard : Dictionary) -> Status:
-	while running_index < children.size():
-		var child : BehaviorNode = children[running_index]
+	while running_index < behavior_children.size():
+		var child : BehaviorNode = behavior_children[running_index]
 		var result : Status = child.tick(actor, blackboard)
 
 		match result:

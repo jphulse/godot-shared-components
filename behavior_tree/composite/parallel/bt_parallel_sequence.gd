@@ -5,12 +5,12 @@ extends BTComposite
 ## returns failure, otherwise checks total success and if they all succeeded it returns success else
 ## at least one was running so it returns running
 func tick(actor : Node, blackboard : Dictionary) -> Status:
-	if children.is_empty():
+	if behavior_children.is_empty():
 		return Status.SUCCESS
 
 	var success_count : int = 0
 
-	for child : BehaviorNode in children:
+	for child : BehaviorNode in behavior_children:
 		var result : Status = child.tick(actor, blackboard)
 
 		match result:
@@ -21,7 +21,7 @@ func tick(actor : Node, blackboard : Dictionary) -> Status:
 			Status.RUNNING:
 				pass
 
-	if success_count == children.size():
+	if success_count == behavior_children.size():
 		return Status.SUCCESS
 
 	return Status.RUNNING

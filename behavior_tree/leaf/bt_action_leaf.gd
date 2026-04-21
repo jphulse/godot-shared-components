@@ -1,20 +1,48 @@
-class_name BTActionCallable
-extends BehaviorNode
+class_name BTAction
+extends BTLeafNode
 
-## The action executed every tick
-var action : Callable
-var debug_name : String 
+## Optional node that owns the method to call.
+## If unset, this will default to the actor passed into tick().
+@export var target_path: NodePath
 
-func _init(_action : Callable, _debug_name : String = "action") -> void:
-	action = _action
-	debug_name = _debug_name
+## Name of the method to call.
+## The method should accept:
+##     func method_name(actor: Node, blackboard: Dictionary) -> BehaviorNode.Status
+@export var method_name: StringName = &""
 
-## Calls the assigned action callable and gives it actor and blackboard
-func tick(actor : Node, blackboard : Dictionary) -> Status:
-	if not action.is_valid():
+## Useful for debugging tree output.
+@export var debug_name: String = "Action"
+
+var target: Node = null
+
+
+func _ready() -> void:
+	if target_path != NodePath():
+		target = get_node_or_null(target_path)
+
+
+func tick(actor: Node, blackboard: Dictionary) -> Status:
+	var callable_target := target
+
+	if callable_target == null:
+		callable_target = actor
+
+	if callable_target == null:
+		push_error("%s has no target and no actor was provided." % debug_name)
 		return Status.FAILURE
-	var result : Variant = action.call(actor, blackboard)
+
+	if method_name == &"":
+		push_error("%s has no method_name assigned." % debug_name)
+		return Status.FAILURE
+
+	if not callable_target.has_method(method_name):
+		push_error("%s target does not have method '%s'." % [debug_name, method_name])
+		return Status.FAILURE
+
+	var result: Variant = callable_target.call(method_name, actor, blackboard)
+
 	if result is Status:
 		return result
-	push_error("leaf node action function did not return a BehaviorNode.Status, this is required for expected behavior")
+
+	push_error("%s method '%s' did not return a BehaviorNode.Status." % [debug_name, method_name])
 	return Status.FAILURE
