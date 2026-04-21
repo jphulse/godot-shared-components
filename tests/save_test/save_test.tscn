@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://snnhhshpora5"]
+
+[ext_resource type="Script" uid="uid://i0a17oqu7og6" path="res://addons/jeremy_components/components/save_component/save_component.gd" id="1_5cttc"]
+[ext_resource type="Script" uid="uid://chy7ldwc4q6td" path="res://addons/jeremy_components/tests/save_test/save_test.gd" id="1_ph7bk"]
+[ext_resource type="Script" uid="uid://cdwfgjieeq4jr" path="res://addons/jeremy_components/tests/save_test/test_player.gd" id="2_ddlku"]
+
+[node name="SaveTest" type="Node2D" unique_id=102524947]
+script = ExtResource("1_ph7bk")
+
+[node name="TestPlayer" type="Node2D" parent="." unique_id=116498900]
+script = ExtResource("2_ddlku")
+
+[node name="SaveComponent" type="Node" parent="TestPlayer" unique_id=786189692]
+script = ExtResource("1_5cttc")
+save_id = &"player"
+metadata/_custom_type_script = "uid://i0a17oqu7og6"
