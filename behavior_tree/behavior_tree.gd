@@ -88,5 +88,5 @@ func add_decorator_to_root(decorator: BTDecorator) -> void:
 	if root != null:
 		root.add_decorator(decorator)
 		if root.parent != null:
-			root = root.parent
+			set_root(root.parent)
 			
