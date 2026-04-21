@@ -83,3 +83,10 @@ func reset() -> void:
 	if root != null:
 		root.reset()
 	last_status = BehaviorNode.Status.FAILURE
+	
+func add_decorator_to_root(decorator: BTDecorator) -> void:
+	if root != null:
+		root.add_decorator(decorator)
+		if root.parent != null:
+			root = root.parent
+			
