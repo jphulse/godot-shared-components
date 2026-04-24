@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://calcgi87rnr4"]
 
+[ext_resource type="Script" uid="uid://dgv0t3e33vm3d" path="res://addons/jeremy_components/components/hurtbox_component/hurtbox_component_3d/hurtbox_component_3d.gd" id="1_uuf7x"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_s6eeq"]
 
 [node name="HurtboxComponent3d" type="Area3D" unique_id=1627365412]
+script = ExtResource("1_uuf7x")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=481583132]
 shape = SubResource("SphereShape3D_s6eeq")
