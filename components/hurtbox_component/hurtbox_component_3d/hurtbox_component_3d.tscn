@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://calcgi87rnr4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s6eeq"]
+
+[node name="HurtboxComponent3d" type="Area3D" unique_id=1627365412]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=481583132]
+shape = SubResource("SphereShape3D_s6eeq")

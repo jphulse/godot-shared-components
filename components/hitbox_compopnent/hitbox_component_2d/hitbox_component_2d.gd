@@ -1,7 +1,7 @@
-class_name HitboxComponent extends Area2D
+class_name HitboxComponent2D extends Area2D
 
 ## Emitted by the hitbox when we hit a hurtbox
-signal hurtbox_hit(hurtbox : HurtboxComponent)
+signal hurtbox_hit(hurtbox : HurtboxComponent2D)
 
 ## The shape used in the collision component
 @export var shape : Shape2D = null:
@@ -21,7 +21,7 @@ signal hurtbox_hit(hurtbox : HurtboxComponent)
 @onready var collision_shape : CollisionShape2D = $CollisionShape2D
 
 ## These items have already been hit by this hitbox, prevents duplicate hits if unwanted
-var _already_hit: Array[HurtboxComponent] = []
+var _already_hit: Array[HurtboxComponent2D] = []
 
 
 ## Sets the shape to be the exported var if not null
@@ -32,7 +32,7 @@ func _ready() -> void:
 
 ## Linked in editor called when areas is entered, if hurtbox emit the hit signal
 func _on_area_entered(area: Area2D) -> void:
-	if area is HurtboxComponent and not ( prevent_duplicate_hits and _already_hit.has(area)) :
+	if area is HurtboxComponent2D and not ( prevent_duplicate_hits and _already_hit.has(area)) :
 		hurtbox_hit.emit(area)
 		if prevent_duplicate_hits:	
 			_already_hit.append(area)

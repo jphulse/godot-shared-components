@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dka2dqa0vxgf"]
+
+[ext_resource type="Script" uid="uid://o74w2ctqaxlv" path="res://addons/jeremy_components/components/hitbox_compopnent/hitbox_component_3d/hitbox_component_3d.gd" id="1_7fvnl"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_noyyh"]
+
+[node name="HitboxComponent3d" type="Area3D" unique_id=1811134237]
+script = ExtResource("1_7fvnl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171342135]
+shape = SubResource("SphereShape3D_noyyh")

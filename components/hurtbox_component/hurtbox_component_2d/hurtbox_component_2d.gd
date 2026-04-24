@@ -1,4 +1,4 @@
-class_name HurtboxComponent extends Area2D
+class_name HurtboxComponent2D extends Area2D
 
 ## Emitted when the hurtbox takes damage
 signal hurtbox_damaged(damage : DamageData)
