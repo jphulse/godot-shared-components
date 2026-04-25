@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://06w51v06ssci"]
+
+[ext_resource type="Script" uid="uid://c1n7b2runuha0" path="res://addons/jeremy_components/components/navigation_component/navigation_component_3d/navigation_component_3d.gd" id="1_o4f62"]
+
+[node name="NavigationComponent3d" type="NavigationAgent3D" unique_id=20688378]
+script = ExtResource("1_o4f62")
+
+[node name="NavTimer" type="Timer" parent="." unique_id=1854251159]
+
+[connection signal="timeout" from="NavTimer" to="." method="_on_nav_timer_timeout"]
