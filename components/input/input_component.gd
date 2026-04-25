@@ -13,17 +13,34 @@ signal action_held(action_id: StringName)
 ## Emitted when a configured vector changes, or every tick if emit_unchanged is enabled.
 signal vector_changed(vector_id: StringName, value: Vector2)
 
+## Emitted when mouse motion is detected in _unhandled_input if capture_mouse_motion is enabled
+signal mouse_motion_changed(motion_id: StringName, relative: Vector2)
+
+@export_group("Processing")
 ## Whether this component is currently reading input.
 @export var enabled: bool = true
 
 ## Whether vector and held-action polling should happen in _process instead of _physics_process.
 @export var use_process: bool = false
 
+@export_group("Bindings")
 ## Action bindings checked by this component.
 @export var action_bindings: Array[InputActionBinding] = []
 
 ## Vector bindings checked by this component.
 @export var vector_bindings: Array[InputVectorBinding] = []
+
+@export_group("Mouse Motion")
+## Whether this component should emit mouse motion events from _unhandled_input().
+@export var capture_mouse_motion: bool = false
+
+## The gameplay-facing ID for mouse motion from this component.
+@export var mouse_motion_id: StringName = &"mouse_look"
+
+## Multiplier applied to raw mouse motion.
+@export var mouse_sensitivity: float = 1.0
+
+@export_group("")
 
 ## The most recent value for each configured vector ID.
 var vector_values: Dictionary[StringName, Vector2] = {}
@@ -48,6 +65,14 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not enabled:
+		return
+		
+	if capture_mouse_motion and event is InputEventMouseMotion:
+		var mouse_event: InputEventMouseMotion = event
+		mouse_motion_changed.emit(
+			mouse_motion_id,
+			mouse_event.relative * mouse_sensitivity
+		)
 		return
 
 	for binding: InputActionBinding in action_bindings:
