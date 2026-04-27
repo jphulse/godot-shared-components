@@ -383,37 +383,74 @@ func _poll_chord_events(event: InputEvent) -> void:
 		var is_held: bool = _is_chord_held_after_event(binding, event)
 
 		if is_held and not was_held:
+			if not allow_overlapping_chord_press_processing:
+				if _is_chord_blocked_by_active_overlap(binding):
+					continue
+
 			chord_held_values[binding.chord_id] = true
 			chord_pressed.emit(binding.chord_id)
+
 			if not allow_overlapping_chord_press_processing:
 				return
+
 			continue
 
 		if not is_held and was_held:
 			chord_held_values[binding.chord_id] = false
 			chord_released.emit(binding.chord_id)
 
+			if not allow_overlapping_chord_press_processing:
+				return
 
-## Polls configured chord bindings that should emit while held.
+## Polls configured chord bindings that should emit while already held.
 func _poll_held_chords() -> void:
 	for binding: InputChordBinding in chord_bindings:
 		if not _is_chord_binding_valid(binding):
 			continue
 
 		var was_held: bool = chord_held_values.get(binding.chord_id, false)
+
+		if not was_held:
+			continue
+
 		var is_held: bool = _is_chord_currently_held(binding)
 
-		if is_held and not was_held:
-			chord_held_values[binding.chord_id] = true
-			chord_pressed.emit(binding.chord_id)
-
-		if not is_held and was_held:
+		if not is_held:
 			chord_held_values[binding.chord_id] = false
 			chord_released.emit(binding.chord_id)
+			continue
 
-		if is_held:
-			chord_held.emit(binding.chord_id)
+		chord_held.emit(binding.chord_id)
 
+## Returns true if this chord overlaps with another currently active chord.
+func _is_chord_blocked_by_active_overlap(binding: InputChordBinding) -> bool:
+	for other_binding: InputChordBinding in chord_bindings:
+		if not _is_chord_binding_valid(other_binding):
+			continue
+
+		if other_binding.chord_id == binding.chord_id:
+			continue
+
+		if not chord_held_values.get(other_binding.chord_id, false):
+			continue
+
+		if _chords_overlap(binding, other_binding):
+			return true
+
+	return false
+
+
+## Returns true if two chord bindings share at least one input action.
+func _chords_overlap(
+	first_binding: InputChordBinding,
+	second_binding: InputChordBinding
+) -> bool:
+	for first_action: StringName in first_binding.input_actions:
+		for second_action: StringName in second_binding.input_actions:
+			if first_action == second_action:
+				return true
+
+	return false
 
 ## Returns true if this input event is related to one of the chord's input actions.
 func _event_matches_chord_action(
