@@ -16,9 +16,17 @@ res://addons/jeremy_components
 Godot recognizes the addon through the `plugin.cfg` file at the root of this repository.
 
 ## File Structure
-
+* `autoloads`
+	* Global scope singleton classes and data files needed for them to work
+	
+* `behavior_tree`
+	* Behavior tree class including several node types for use in AI coding
+	
 * `components`
 	* Contains reusable components for a composition-based system, such as `HealthComponent`, `HitboxComponent`, etc.
+
+* `shaders`
+	* Reusable shaders for game visuals
 
 * `state_machine`
 	* Contains a reusable state machine, nested state machine, and extendable state class.
