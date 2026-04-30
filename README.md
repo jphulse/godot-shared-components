@@ -38,6 +38,9 @@ Godot recognizes the addon through the `plugin.cfg` file at the root of this rep
 	* Contains basic data type objects. These will mostly extend `Resource` or `RefCounted` for use inside and outside of the addon.
 	* When adding game-specific objects, extend the existing shared class and keep the game-specific subclass local to your game project.
 
+* `multithreading`
+	* Contains objects related to running background tasks or simplifying multitreaded workflows in the engine
+
 ## System Status
 
 | System | Status | Notes |
@@ -47,8 +50,13 @@ Godot recognizes the addon through the `plugin.cfg` file at the root of this rep
 | BehaviorTree | Experimental | Needs more project usage |
 | InputComponent | Experimental | Needs more field testing |
 | Transition System | Experimental / field testing | API may change |
+| Save System | Experimental / Field Testing | Needs more field testing; API may change |
 | BackgroundTaskRunner | Experimental | Advanced utility; thread-safety depends on usage |
 | ObjectPool | Planned / in development | Not yet stable |
+
+## Core Utility Policy
+
+Low-level utility classes such as stacks, queues, linked lists, and simple data containers are treated as stable after unit testing. Unlike larger gameplay systems, they are not individually tracked in the system status table unless they are experimental or have known issues.
 
 ## Setup
 
