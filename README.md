@@ -38,6 +38,18 @@ Godot recognizes the addon through the `plugin.cfg` file at the root of this rep
 	* Contains basic data type objects. These will mostly extend `Resource` or `RefCounted` for use inside and outside of the addon.
 	* When adding game-specific objects, extend the existing shared class and keep the game-specific subclass local to your game project.
 
+## System Status
+
+| System | Status | Notes |
+|---|---|---|
+| StateMachine | Field tested | Used successfully in multiple projects |
+| NestedStateMachine | Experimental / testing | API may change |
+| BehaviorTree | Experimental | Needs more project usage |
+| InputComponent | Experimental | Needs more field testing |
+| Transition System | Experimental / field testing | API may change |
+| BackgroundTaskRunner | Experimental | Advanced utility; thread-safety depends on usage |
+| ObjectPool | Planned / in development | Not yet stable |
+
 ## Setup
 
 ### Project owner or initial setup
