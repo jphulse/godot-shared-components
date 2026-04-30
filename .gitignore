@@ -16,6 +16,7 @@ export_credentials.cfg
 # mono_crash.*.json
 
 *.uid
+*.import
 
 # Godot/editor cache
 .godot/

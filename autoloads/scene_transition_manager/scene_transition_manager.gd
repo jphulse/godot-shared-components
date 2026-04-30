@@ -103,7 +103,7 @@ class TransitionContext:
 
 		manager._set_loading_progress(target_scene_id, loading_progress, loading_status_text)
 
-
+#region signals
 ## Emitted when a transition begins.
 signal transition_started(target_scene_id: String)
 
@@ -133,7 +133,9 @@ signal loading_finished(target_scene_id: String)
 
 ## Emitted when threaded loading fails.
 signal loading_failed(target_scene_id: String, error_code: Error)
+#endregion
 
+#region Class constants
 ## Default autoload name for this manager.
 const DEFAULT_AUTOLOAD_NAME: StringName = &"SceneTransitions"
 
@@ -151,7 +153,9 @@ const USE_DEFAULT_COLOR: Color = Color(0.0, 0.0, 0.0, -1.0)
 
 ## Minimum progress difference required before another progress signal is emitted.
 const LOADING_PROGRESS_EMIT_EPSILON: float = 0.0001
+#endregion
 
+#region Exported vars
 ## Default fade-out duration in seconds.
 @export var default_fade_out_duration: float = DEFAULT_FADE_DURATION
 
@@ -172,7 +176,9 @@ const LOADING_PROGRESS_EMIT_EPSILON: float = 0.0001
 
 ## Whether the overlay should be hidden after it becomes fully transparent.
 @export var hide_overlay_when_transparent: bool = true
+#endregion
 
+#region Public variables
 ## Optional global transition callable used instead of the default fade transition.
 var transition_callable: Callable = Callable()
 
@@ -185,6 +191,14 @@ var is_transitioning: bool = false
 ## Identifier for the scene currently being transitioned to.
 var current_target_scene_id: String = ""
 
+## Current loading progress for the active transition.
+var current_loading_progress: float = 0.0
+
+## Current loading status text for the active transition.
+var current_loading_status_text: String = ""
+#endregion
+
+#region Private variables
 ## Fullscreen ColorRect used by the default transition.
 var _overlay: ColorRect = null
 
@@ -200,12 +214,6 @@ var _previous_tree_paused: bool = false
 ## Whether the current transition changed the SceneTree pause state.
 var _pause_was_changed_by_transition: bool = false
 
-## Current loading progress for the active transition.
-var current_loading_progress: float = 0.0
-
-## Current loading status text for the active transition.
-var current_loading_status_text: String = ""
-
 ## Packed scenes loaded through threaded scene transitions.
 var _threaded_loaded_scene_by_path: Dictionary = {}
 
@@ -217,8 +225,9 @@ var _last_emitted_loading_status_text: String = ""
 
 ## Whether the manager has emitted at least one loading progress update this transition.
 var _has_emitted_loading_progress: bool = false
+#endregion
 
-
+#region engine processing
 ## Initializes the transition manager and creates the default overlay.
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -234,7 +243,9 @@ func _input(_event: InputEvent) -> void:
 	if _input_is_blocked:
 		get_viewport().set_input_as_handled()
 
+#endregion
 
+#region Public API
 ## Sets the global transition callable.
 func set_transition_callable(new_transition_callable: Callable) -> void:
 	transition_callable = new_transition_callable
@@ -475,7 +486,47 @@ func cover_screen(transition_color: Color = USE_DEFAULT_COLOR) -> void:
 func emit_transition_event(event_name: StringName, event_data: Dictionary = {}) -> void:
 	transition_event.emit(event_name, event_data)
 
+## Changes to a scene file using threaded loading so progress can be displayed.
+func change_scene_to_file_threaded(
+	scene_path: String,
+	fade_out_duration: float = USE_DEFAULT_DURATION,
+	fade_in_duration: float = USE_DEFAULT_DURATION,
+	transition_color: Color = USE_DEFAULT_COLOR,
+	transition_callable_override: Callable = Callable(),
+	transition_data: Dictionary = {},
+	use_sub_threads: bool = false,
+	cache_mode: int = ResourceLoader.CACHE_MODE_REUSE
+) -> Error:
+	if scene_path.is_empty():
+		return ERR_INVALID_PARAMETER
 
+	var threaded_transition_data: Dictionary = transition_data.duplicate()
+	threaded_transition_data["scene_path"] = scene_path
+	threaded_transition_data["use_sub_threads"] = use_sub_threads
+	threaded_transition_data["cache_mode"] = cache_mode
+
+	var chosen_transition_callable: Callable = _resolve_loading_transition_callable(transition_callable_override)
+
+	return await run_transition(
+		scene_path,
+		func() -> Error:
+			var loaded_scene: PackedScene = _threaded_loaded_scene_by_path.get(scene_path) as PackedScene
+
+			if loaded_scene == null:
+				return ERR_UNAVAILABLE
+
+			_threaded_loaded_scene_by_path.erase(scene_path)
+			return get_tree().change_scene_to_packed(loaded_scene),
+		chosen_transition_callable,
+		threaded_transition_data,
+		true,
+		fade_out_duration,
+		fade_in_duration,
+		transition_color
+	)
+#endregion
+
+#region Private helpers
 ## Default transition implementation: fade out, change scene, fade in.
 func _run_default_fade_transition(context: TransitionContext) -> Error:
 	_prepare_overlay_for_transition(context.transition_color)
@@ -666,44 +717,7 @@ func _set_loading_progress(target_scene_id: String, progress: float, status_text
 		"status_text": current_loading_status_text,
 	})
 
-## Changes to a scene file using threaded loading so progress can be displayed.
-func change_scene_to_file_threaded(
-	scene_path: String,
-	fade_out_duration: float = USE_DEFAULT_DURATION,
-	fade_in_duration: float = USE_DEFAULT_DURATION,
-	transition_color: Color = USE_DEFAULT_COLOR,
-	transition_callable_override: Callable = Callable(),
-	transition_data: Dictionary = {},
-	use_sub_threads: bool = false,
-	cache_mode: int = ResourceLoader.CACHE_MODE_REUSE
-) -> Error:
-	if scene_path.is_empty():
-		return ERR_INVALID_PARAMETER
 
-	var threaded_transition_data: Dictionary = transition_data.duplicate()
-	threaded_transition_data["scene_path"] = scene_path
-	threaded_transition_data["use_sub_threads"] = use_sub_threads
-	threaded_transition_data["cache_mode"] = cache_mode
-
-	var chosen_transition_callable: Callable = _resolve_loading_transition_callable(transition_callable_override)
-
-	return await run_transition(
-		scene_path,
-		func() -> Error:
-			var loaded_scene: PackedScene = _threaded_loaded_scene_by_path.get(scene_path) as PackedScene
-
-			if loaded_scene == null:
-				return ERR_UNAVAILABLE
-
-			_threaded_loaded_scene_by_path.erase(scene_path)
-			return get_tree().change_scene_to_packed(loaded_scene),
-		chosen_transition_callable,
-		threaded_transition_data,
-		true,
-		fade_out_duration,
-		fade_in_duration,
-		transition_color
-	)
 
 ## Default loading transition: fade out, threaded load with progress, change scene, fade in.
 func _run_default_loading_fade_transition(context: TransitionContext) -> Error:
@@ -804,3 +818,4 @@ func _load_packed_scene_threaded(context: TransitionContext) -> Error:
 
 	loading_finished.emit(context.target_scene_id)
 	return OK
+#endregion

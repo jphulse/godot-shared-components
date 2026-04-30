@@ -41,7 +41,7 @@ func get_state() -> Dictionary:
 
 	var state := {}
 
-	if target is Node2D:
+	if target is Node2D or target is Node3D:
 		state["position"] = target.position
 		state["rotation"] = target.rotation
 		state["scale"] = target.scale
