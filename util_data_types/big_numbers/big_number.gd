@@ -89,10 +89,10 @@ func add(other: BigNumber) -> BigNumber:
 	if other.exponent - exponent > EXPONENT_ADD_CUTOFF and use_exponent_math_cutoff:
 		return other.duplicate_number()
 
-	var result_exponent := max(exponent, other.exponent)
+	var result_exponent : int = max(exponent, other.exponent)
 
-	var adjusted_self := mantissa * pow(10.0, float(exponent - result_exponent))
-	var adjusted_other := other.mantissa * pow(10.0, float(other.exponent - result_exponent))
+	var adjusted_self : float = mantissa * pow(10.0, float(exponent - result_exponent))
+	var adjusted_other : float = other.mantissa * pow(10.0, float(other.exponent - result_exponent))
 
 	return BigNumber.new(adjusted_self + adjusted_other, result_exponent)
 
@@ -142,18 +142,18 @@ func pow_float(power: float) -> BigNumber:
 	# For negative values, fractional powers are not supported in this simple version.
 	assert(mantissa > 0.0 or floor(power) == power, "Fractional powers of negative BigNumbers are not supported.")
 
-	var sign := 1.0
+	var sign : float = 1.0
 
 	if mantissa < 0.0:
-		var int_power := int(power)
+		var int_power : int = int(power)
 		if int_power % 2 != 0:
 			sign = -1.0
 
-	var log10_value := _log10(absf(mantissa)) + float(exponent)
-	var powered_log := log10_value * power
+	var log10_value : float = _log10(absf(mantissa)) + float(exponent)
+	var powered_log : float = log10_value * power
 
-	var new_exponent := int(floor(powered_log))
-	var new_mantissa := sign * pow(10.0, powered_log - float(new_exponent))
+	var new_exponent : int = int(floor(powered_log))
+	var new_mantissa : float = sign * pow(10.0, powered_log - float(new_exponent))
 
 	return BigNumber.new(new_mantissa, new_exponent)
 
@@ -177,7 +177,7 @@ func compare_to(other: BigNumber) -> int:
 	if mantissa < 0.0 and other.mantissa > 0.0:
 		return -1
 
-	var both_negative := mantissa < 0.0 and other.mantissa < 0.0
+	var both_negative : bool = mantissa < 0.0 and other.mantissa < 0.0
 
 	if exponent > other.exponent:
 		return -1 if both_negative else 1
@@ -227,7 +227,7 @@ func to_scientific_string(decimal_places: int = 2) -> String:
 	if is_zero():
 		return "0"
 
-	var format := "%." + str(decimal_places) + "f"
+	var format : String = "%." + str(decimal_places) + "f"
 	return format % mantissa + "e" + str(exponent)
 
 
@@ -236,14 +236,14 @@ func to_short_string(decimal_places: int = 2) -> String:
 		return "0"
 
 	if exponent >= 0 and exponent < 3:
-		var value := to_float()
-		var format_small := "%." + str(decimal_places) + "f"
+		var value : float = to_float()
+		var format_small : String = "%." + str(decimal_places) + "f"
 		return _trim_trailing_zeroes(format_small % value)
 
 	if exponent < 0:
 		return to_scientific_string(decimal_places)
 
-	var suffixes := [
+	var suffixes : Array[String] = [
 		"",
 		"K",
 		"M",
@@ -258,13 +258,13 @@ func to_short_string(decimal_places: int = 2) -> String:
 		"Dc"
 	]
 
-	var suffix_index := int(exponent / 3)
+	var suffix_index : int = int(exponent / 3)
 
 	if suffix_index > 0 and suffix_index < suffixes.size():
-		var display_exponent := exponent % 3
-		var display_value := mantissa * pow(10.0, float(display_exponent))
+		var display_exponent : int = exponent % 3
+		var display_value : float = mantissa * pow(10.0, float(display_exponent))
 
-		var format_suffix := "%." + str(decimal_places) + "f"
+		var format_suffix : String = "%." + str(decimal_places) + "f"
 		return _trim_trailing_zeroes(format_suffix % display_value) + suffixes[suffix_index]
 
 	return to_scientific_string(decimal_places)
@@ -284,13 +284,13 @@ func _normalize() -> void:
 		exponent = 0
 		return
 
-	var sign := 1.0
+	var sign : float = 1.0
 
 	if mantissa < 0.0:
 		sign = -1.0
 		mantissa = absf(mantissa)
 	
-	var exponent_shift := int(floor(_log10(mantissa)))
+	var exponent_shift : int = int(floor(_log10(mantissa)))
 
 	mantissa = mantissa / pow(10.0, float(exponent_shift))
 	exponent += exponent_shift

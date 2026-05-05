@@ -58,14 +58,14 @@ func request_cancel() -> void:
 ## Returns whether cancellation has been requested.
 func is_cancel_requested() -> bool:
 	_mutex.lock()
-	var requested := _cancel_requested
+	var requested : bool = _cancel_requested
 	_mutex.unlock()
 	return requested
 
 
 ## Returns whether the task has reached a final state.
 func is_finished() -> bool:
-	var current_status := get_status()
+	var current_status : int = get_status()
 	return current_status == Status.COMPLETED or current_status == Status.FAILED or current_status == Status.CANCELLED
 
 
@@ -77,7 +77,7 @@ func is_active() -> bool:
 ## Returns the current task status.
 func get_status() -> int:
 	_mutex.lock()
-	var current_status := _status
+	var current_status : int = _status
 	_mutex.unlock()
 	return current_status
 
@@ -85,7 +85,7 @@ func get_status() -> int:
 ## Returns the WorkerThreadPool task id.
 func get_worker_task_id() -> int:
 	_mutex.lock()
-	var task_id := _worker_task_id
+	var task_id : int = _worker_task_id
 	_mutex.unlock()
 	return task_id
 
@@ -93,7 +93,7 @@ func get_worker_task_id() -> int:
 ## Returns the successful result value, or null if no result exists.
 func get_result() -> Variant:
 	_mutex.lock()
-	var current_result := _result
+	var current_result : Variant = _result
 	_mutex.unlock()
 	return current_result
 
@@ -101,7 +101,7 @@ func get_result() -> Variant:
 ## Returns the failure message, or an empty string if no failure exists.
 func get_error_message() -> String:
 	_mutex.lock()
-	var current_error_message := _error_message
+	var current_error_message : String = _error_message
 	_mutex.unlock()
 	return current_error_message
 
@@ -162,18 +162,18 @@ func _mark_cancelled_from_worker() -> void:
 
 ## Emits the correct final signal from the main thread.
 func _dispatch_finished_on_main_thread() -> void:
-	var current_status := get_status()
+	var current_status : int = get_status()
 
 	match current_status:
 		Status.COMPLETED:
-			var current_result := get_result()
+			var current_result : Variant = get_result()
 			completed.emit(current_result)
 
 			if _completed_callback.is_valid():
 				_completed_callback.call(current_result)
 
 		Status.FAILED:
-			var current_error_message := get_error_message()
+			var current_error_message : String = get_error_message()
 			failed.emit(current_error_message)
 
 			if _failed_callback.is_valid():

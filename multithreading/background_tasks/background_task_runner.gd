@@ -46,7 +46,7 @@ func run_task(
 	cancelled_callback: Callable = Callable(),
 	bind_handle: bool = false
 ) -> BackgroundTaskHandle:
-	var handle := BackgroundTaskHandle.new()
+	var handle : BackgroundTaskHandle = BackgroundTaskHandle.new()
 	handle._set_callbacks(completed_callback, failed_callback, cancelled_callback)
 
 	if not task_callable.is_valid():
@@ -56,12 +56,12 @@ func run_task(
 
 	_issued_task_count += 1
 
-	var task_description := "%s %d" % [task_description_prefix, _issued_task_count]
+	var task_description : String = "%s %d" % [task_description_prefix, _issued_task_count]
 
-	var worker_callable := func() -> void:
+	var worker_callable : Callable = func() -> void:
 		BackgroundTaskRunner._execute_task_on_worker(task_callable, handle, bind_handle)
 
-	var worker_task_id := WorkerThreadPool.add_task(worker_callable, high_priority, task_description)
+	var worker_task_id : int = WorkerThreadPool.add_task(worker_callable, high_priority, task_description)
 	handle._set_worker_task_id(worker_task_id)
 
 	_active_tasks.append(handle)
@@ -77,7 +77,7 @@ func poll_completed_tasks() -> void:
 	var finished_tasks: Array[BackgroundTaskHandle] = []
 
 	for handle in _active_tasks:
-		var worker_task_id := handle.get_worker_task_id()
+		var worker_task_id : int = handle.get_worker_task_id()
 
 		if worker_task_id >= 0 and WorkerThreadPool.is_task_completed(worker_task_id):
 			WorkerThreadPool.wait_for_task_completion(worker_task_id)
@@ -99,10 +99,10 @@ func cancel_all_tasks() -> void:
 
 ## Blocks the main thread until every active task is finished.
 func wait_for_all_tasks(dispatch_signals: bool = true) -> void:
-	var task_snapshot := _active_tasks.duplicate()
+	var task_snapshot : Array = _active_tasks.duplicate()
 
 	for handle : BackgroundTaskHandle in task_snapshot:
-		var worker_task_id := handle.get_worker_task_id()
+		var worker_task_id : int = handle.get_worker_task_id()
 
 		if worker_task_id >= 0:
 			WorkerThreadPool.wait_for_task_completion(worker_task_id)
@@ -151,7 +151,7 @@ static func _execute_task_on_worker(task_callable: Callable, handle: BackgroundT
 		return
 
 	if raw_result is BackgroundTaskResult:
-		var task_result := raw_result as BackgroundTaskResult
+		var task_result : BackgroundTaskResult = raw_result as BackgroundTaskResult
 
 		if task_result.succeeded:
 			handle._mark_completed_from_worker(task_result.value)

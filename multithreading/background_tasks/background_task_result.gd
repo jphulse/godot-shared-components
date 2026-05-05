@@ -13,7 +13,7 @@ var error_message: String = ""
 
 ## Creates a successful task result.
 static func success(result_value: Variant = null) -> BackgroundTaskResult:
-	var task_result := BackgroundTaskResult.new()
+	var task_result : BackgroundTaskResult = BackgroundTaskResult.new()
 	task_result.succeeded = true
 	task_result.value = result_value
 	task_result.error_message = ""
@@ -22,7 +22,7 @@ static func success(result_value: Variant = null) -> BackgroundTaskResult:
 
 ## Creates a failed task result.
 static func failure(message: String) -> BackgroundTaskResult:
-	var task_result := BackgroundTaskResult.new()
+	var task_result : BackgroundTaskResult = BackgroundTaskResult.new()
 	task_result.succeeded = false
 	task_result.value = null
 	task_result.error_message = message

@@ -1,7 +1,7 @@
 class_name Stack
 extends RefCounted
 
-var _list := LinkedList.new()
+var _list : LinkedList = LinkedList.new()
 
 ## Pushes an element to the top of the stack
 func push(val: Variant) -> void:

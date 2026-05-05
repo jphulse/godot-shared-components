@@ -403,7 +403,7 @@ func run_transition(
 
 	_apply_pause_if_needed()
 
-	var context := TransitionContext.new(
+	var context : TransitionContext = TransitionContext.new(
 		self,
 		target_scene_id,
 		scene_change_callable,

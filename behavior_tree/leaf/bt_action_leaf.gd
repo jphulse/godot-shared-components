@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 func tick(actor: Node, blackboard: Dictionary) -> Status:
-	var callable_target := target
+	var callable_target : Node = target
 
 	if callable_target == null:
 		callable_target = actor

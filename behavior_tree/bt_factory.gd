@@ -5,21 +5,21 @@ extends RefCounted
 #region Basic composites
 
 static func sequence(children: Array[BehaviorNode] = []) -> BTSequence:
-	var node := BTSequence.new()
+	var node : BTSequence = BTSequence.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func selector(children: Array[BehaviorNode] = []) -> BTSelector:
-	var node := BTSelector.new()
+	var node : BTSelector = BTSelector.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func random_selector(children: Array[BehaviorNode] = []) -> BTRandomSelector:
-	var node := BTRandomSelector.new()
+	var node : BTRandomSelector = BTRandomSelector.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
@@ -30,21 +30,21 @@ static func random_selector(children: Array[BehaviorNode] = []) -> BTRandomSelec
 #region Memory composites
 
 static func memory_sequence(children: Array[BehaviorNode] = []) -> BTMemorySequence:
-	var node := BTMemorySequence.new()
+	var node : BTMemorySequence = BTMemorySequence.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func memory_selector(children: Array[BehaviorNode] = []) -> BTMemorySelector:
-	var node := BTMemorySelector.new()
+	var node : BTMemorySelector = BTMemorySelector.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func memory_random_selector(children: Array[BehaviorNode] = []) -> BTMemoryRandomSelector:
-	var node := BTMemoryRandomSelector.new()
+	var node :BTMemoryRandomSelector = BTMemoryRandomSelector.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
@@ -59,21 +59,21 @@ static func parallel(
 	success_threshold: int = 1,
 	failure_threshold: int = 1
 ) -> BTParallel:
-	var node := BTParallel.new(success_threshold, failure_threshold)
+	var node : BTParallel = BTParallel.new(success_threshold, failure_threshold)
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func parallel_sequence(children: Array[BehaviorNode] = []) -> BTParallelSequence:
-	var node := BTParallelSequence.new()
+	var node : BTParallelSequence = BTParallelSequence.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node
 
 
 static func parallel_selector(children: Array[BehaviorNode] = []) -> BTParallelSelector:
-	var node := BTParallelSelector.new()
+	var node : BTParallelSelector = BTParallelSelector.new()
 	for child: BehaviorNode in children:
 		node.add_child_node(child)
 	return node

@@ -8,7 +8,7 @@ extends RefCounted
 ## lower priority values are popped first
 ##
 ##  usage example:
-## var queue := PriorityQueue.new()
+## var queue : PriorityQueue = PriorityQueue.new()
 ## queue.push("low priority", 10)
 ## queue.push("high priority", 1)
 ## print(queue.pop()) # "high priority"
@@ -43,7 +43,7 @@ func clear() -> void:
 
 ## Pushes the new value to the correct position in the queue, creating a new entry and placing it in the appropriate spot for it's priority
 func push(value: Variant, priority: float) -> void:
-	var entry := _make_entry(value, priority)
+	var entry : Dictionary = _make_entry(value, priority)
 
 	_heap.append(entry)
 	_sift_up(_heap.size() - 1)
@@ -113,7 +113,7 @@ func to_heap_array() -> Array[Variant]:
 #region Private helper methods
 ## Makes a new entry for the object with priority
 func _make_entry(value: Variant, priority: float) -> Dictionary:
-	var entry := {
+	var entry : Dictionary = {
 		"value": value,
 		"priority": priority,
 		"order": _insertion_counter,
@@ -129,10 +129,10 @@ func _parent_index(index: int) -> int:
 
 ## Moves an element up the heap until it is in the correct spot
 func _sift_up(index: int) -> void:
-	var current_index := index
+	var current_index : int = index
 
 	while current_index > 0:
-		var parent_index := _parent_index(current_index)
+		var parent_index : int = _parent_index(current_index)
 
 		if _has_higher_priority(_heap[current_index], _heap[parent_index]):
 			_swap(current_index, parent_index)
@@ -141,12 +141,12 @@ func _sift_up(index: int) -> void:
 			break
 ## Moves an element down the heap
 func _sift_down(index: int) -> void:
-	var current_index := index
+	var current_index : int = index
 
 	while true:
-		var left_index := _left_child_index(current_index)
-		var right_index := _right_child_index(current_index)
-		var best_index := current_index
+		var left_index : int = _left_child_index(current_index)
+		var right_index : int = _right_child_index(current_index)
+		var best_index : int = current_index
 
 		if left_index < _heap.size() and _has_higher_priority(_heap[left_index], _heap[best_index]):
 			best_index = left_index

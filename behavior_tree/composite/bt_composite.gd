@@ -21,7 +21,7 @@ func resync_children() -> void:
 
 	for node in get_children():
 		if node is BehaviorNode:
-			var child := node as BehaviorNode
+			var child : BehaviorNode = node as BehaviorNode
 			behavior_children.append(child)
 			child.parent = self
 

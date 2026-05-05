@@ -1,7 +1,7 @@
 class_name Queue
 extends RefCounted
 
-var _list := LinkedList.new()
+var _list : LinkedList = LinkedList.new()
 
 ## Adds to the back of the queue
 func enqueue(val: Variant) -> void:

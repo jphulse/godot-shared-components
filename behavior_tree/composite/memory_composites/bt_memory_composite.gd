@@ -41,7 +41,7 @@ func set_running_child(child: BehaviorNode) -> void:
 		clear_running_state()
 		return
 
-	var idx := behavior_children.find(child)
+	var idx : int = behavior_children.find(child)
 
 	if idx == -1:
 		push_warning("Tried to set a running child that is not a child of this memory composite.")

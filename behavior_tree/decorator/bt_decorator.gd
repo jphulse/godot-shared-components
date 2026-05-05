@@ -42,7 +42,7 @@ func set_child(new_child: BehaviorNode, free_old_child: bool = true) -> Behavior
 		resync_child()
 		return null
 
-	var old_child := child
+	var old_child : BehaviorNode = child
 
 	if old_child != null:
 		if old_child.get_parent() == self:
@@ -74,7 +74,7 @@ func clear_child(free_child: bool = true) -> BehaviorNode:
 	if child == null:
 		return null
 
-	var old_child := child
+	var old_child : BehaviorNode = child
 
 	if old_child.get_parent() == self:
 		remove_child(old_child)
