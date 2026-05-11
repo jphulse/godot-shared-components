@@ -258,6 +258,216 @@ func duplicate_matrix() -> Matrix:
 
 	return result
 
+## Returns true if every value in this matrix is nearly zero.
+func is_zero() -> bool:
+	for i : int in range(_rows):
+		for j : int in range(_cols):
+			if not _is_nearly_zero(_matrix[i][j]):
+				return false
+
+	return true
+
+
+## Returns the sum of the main diagonal.
+func trace() -> float:
+	assert(is_square(), "Cannot calculate trace of a non-square matrix")
+
+	var result : float = 0.0
+
+	for i : int in range(_rows):
+		result += _matrix[i][i]
+
+	return result
+
+
+## Returns this matrix in row echelon form.
+func row_echelon(modify_self : bool = false) -> Matrix:
+	var result : Matrix = self if modify_self else duplicate_matrix()
+
+	var pivot_row : int = 0
+
+	for pivot_col : int in range(result._cols):
+		if pivot_row >= result._rows:
+			break
+
+		var best_row : int = pivot_row
+		var best_abs_value : float = absf(result._matrix[pivot_row][pivot_col])
+
+		for row : int in range(pivot_row + 1, result._rows):
+			var test_abs_value : float = absf(result._matrix[row][pivot_col])
+
+			if test_abs_value > best_abs_value:
+				best_abs_value = test_abs_value
+				best_row = row
+
+		if result._is_nearly_zero(best_abs_value):
+			continue
+
+		result.swap_rows(pivot_row, best_row)
+
+		var pivot_value : float = result._matrix[pivot_row][pivot_col]
+
+		for row : int in range(pivot_row + 1, result._rows):
+			var factor : float = result._matrix[row][pivot_col] / pivot_value
+
+			if result._is_nearly_zero(factor):
+				continue
+
+			for col : int in range(pivot_col, result._cols):
+				result._matrix[row][col] -= factor * result._matrix[pivot_row][col]
+
+			result._matrix[row][pivot_col] = 0.0
+
+		pivot_row += 1
+
+	result._clean_nearly_zero_values()
+	return result
+
+
+## Returns this matrix in reduced row echelon form.
+func reduced_row_echelon(modify_self : bool = false) -> Matrix:
+	var result : Matrix = self if modify_self else duplicate_matrix()
+
+	var pivot_row : int = 0
+
+	for pivot_col : int in range(result._cols):
+		if pivot_row >= result._rows:
+			break
+
+		var best_row : int = pivot_row
+		var best_abs_value : float = absf(result._matrix[pivot_row][pivot_col])
+
+		for row : int in range(pivot_row + 1, result._rows):
+			var test_abs_value : float = absf(result._matrix[row][pivot_col])
+
+			if test_abs_value > best_abs_value:
+				best_abs_value = test_abs_value
+				best_row = row
+
+		if result._is_nearly_zero(best_abs_value):
+			continue
+
+		result.swap_rows(pivot_row, best_row)
+
+		var pivot_value : float = result._matrix[pivot_row][pivot_col]
+
+		for col : int in range(pivot_col, result._cols):
+			result._matrix[pivot_row][col] /= pivot_value
+
+		for row : int in range(result._rows):
+			if row == pivot_row:
+				continue
+
+			var factor : float = result._matrix[row][pivot_col]
+
+			if result._is_nearly_zero(factor):
+				continue
+
+			for col : int in range(pivot_col, result._cols):
+				result._matrix[row][col] -= factor * result._matrix[pivot_row][col]
+
+			result._matrix[row][pivot_col] = 0.0
+
+		pivot_row += 1
+
+	result._clean_nearly_zero_values()
+	return result
+
+
+## Returns the rank of this matrix.
+func rank() -> int:
+	var echelon_form : Matrix = row_echelon(false)
+	var result : int = 0
+
+	for row : int in range(echelon_form._rows):
+		var has_non_zero_value : bool = false
+
+		for col : int in range(echelon_form._cols):
+			if not echelon_form._is_nearly_zero(echelon_form._matrix[row][col]):
+				has_non_zero_value = true
+				break
+
+		if has_non_zero_value:
+			result += 1
+
+	return result
+
+
+## Attempts to solve the linear system represented by this coefficient matrix and a constants matrix.
+## Returns null if the system has no unique solution.
+func try_solve_linear_system(constants : Matrix, warn_on_failure : bool = true) -> Matrix:
+	if _rows != constants._rows:
+		if warn_on_failure:
+			push_warning("Coefficient matrix row count must match constants row count")
+		return null
+
+	var augmented : Matrix = Matrix.new(_rows, _cols + constants._cols)
+
+	for row : int in range(_rows):
+		for col : int in range(_cols):
+			augmented.set_value(row, col, _matrix[row][col])
+
+		for col : int in range(constants._cols):
+			augmented.set_value(row, _cols + col, constants._matrix[row][col])
+
+	var reduced : Matrix = augmented.reduced_row_echelon(false)
+
+	for row : int in range(reduced._rows):
+		var coefficient_row_is_zero : bool = true
+
+		for col : int in range(_cols):
+			if not reduced._is_nearly_zero(reduced._matrix[row][col]):
+				coefficient_row_is_zero = false
+				break
+
+		if coefficient_row_is_zero:
+			for col : int in range(constants._cols):
+				if not reduced._is_nearly_zero(reduced._matrix[row][_cols + col]):
+					if warn_on_failure:
+						push_warning("Linear system has no solution")
+					return null
+
+	var pivot_count : int = 0
+
+	for row : int in range(reduced._rows):
+		for col : int in range(_cols):
+			if _is_pivot_position(reduced, row, col):
+				pivot_count += 1
+				break
+
+	if pivot_count != _cols:
+		if warn_on_failure:
+			push_warning("Linear system does not have a unique solution")
+		return null
+
+	var result : Matrix = Matrix.new(_cols, constants._cols)
+
+	for variable_index : int in range(_cols):
+		var pivot_row : int = -1
+
+		for row : int in range(reduced._rows):
+			if _is_pivot_position(reduced, row, variable_index):
+				pivot_row = row
+				break
+
+		if pivot_row == -1:
+			if warn_on_failure:
+				push_warning("Could not find pivot row for variable")
+			return null
+
+		for col : int in range(constants._cols):
+			result.set_value(variable_index, col, reduced._matrix[pivot_row][_cols + col])
+
+	return result
+
+## Solves the linear system and asserts if the system cannot be solved uniquely.
+func solve_linear_system(constants : Matrix) -> Matrix:
+	var result : Matrix = try_solve_linear_system(constants)
+
+	assert(result != null, "Linear system could not be solved uniquely")
+
+	return result
+
 ## Returns a new identity matrix of the given size.
 static func identity(size : int) -> Matrix:
 	assert(size > 0, "Cannot create an identity matrix with invalid size")
@@ -324,3 +534,29 @@ func _make_identity_array(size : int) -> Array[Array]:
 				result[i].append(0.0)
 
 	return result
+	
+## Returns true if the given row and column contain a pivot value in a reduced row echelon matrix.
+func _is_pivot_position(matrix : Matrix, row : int, col : int) -> bool:
+	if not matrix._is_nearly_zero(matrix._matrix[row][col] - 1.0):
+		return false
+
+	for test_row : int in range(matrix._rows):
+		if test_row == row:
+			continue
+
+		if not matrix._is_nearly_zero(matrix._matrix[test_row][col]):
+			return false
+
+	for test_col : int in range(col):
+		if not matrix._is_nearly_zero(matrix._matrix[row][test_col]):
+			return false
+
+	return true
+
+
+## Replaces very small floating point values with exact zero.
+func _clean_nearly_zero_values() -> void:
+	for row : int in range(_rows):
+		for col : int in range(_cols):
+			if _is_nearly_zero(_matrix[row][col]):
+				_matrix[row][col] = 0.0
