@@ -30,10 +30,14 @@ func get_approximate_derivative(x : float, epsilon : float = .00001) -> float:
 		return NAN
 	return (evaluate(x + epsilon) - evaluate(x - epsilon)) / (2 * epsilon)
 
-## Approximates the integral from left_bound to right_bound using the specified method
+## Approximates the integral from left_bound to right_bound using the specified method, will get an exact integral if possible
 func get_approximate_integral(left_bound : float, right_bound: float, 
 		method : IntegralApproximationTechnique = IntegralApproximationTechnique.RIEMANN_MID) -> float:
 	push_warning("get_approximate_integral should be overidden in child classes for use")
+	return NAN
+
+func get_exact_finite_integral(left_bound : float, right_bound : float) -> float:
+	push_warning("get_exact_finite_integral should be overidden in child classes for use")
 	return NAN
 
 ## Solves the equation f(x)=y for x, returns an array of solutions
