@@ -13,6 +13,9 @@ signal action_held(action_id: StringName)
 ## Emitted when a configured vector changes, or every tick if emit_unchanged is enabled.
 signal vector_changed(vector_id: StringName, value: Vector2)
 
+## Emitted when a configured axis changes, or every tick if emit unchanced is enables
+signal axis_changed(axis_id : StringName, value : float)
+
 ## Emitted when mouse motion is detected in _unhandled_input if capture_mouse_motion is enabled.
 signal mouse_motion_changed(motion_id: StringName, relative: Vector2)
 
@@ -54,6 +57,9 @@ signal chord_held(chord_id: StringName)
 ## Vector bindings checked by this component.
 @export var vector_bindings: Array[InputVectorBinding] = []
 
+## Axis bindings checked by this component
+@export var axis_bindings : Array[InputAxisBinding] = []
+
 ## Input sequence bindings checked by this component.
 @export var sequence_bindings: Array[InputSequenceBinding] = []
 
@@ -77,6 +83,9 @@ signal chord_held(chord_id: StringName)
 
 ## The most recent value for each configured vector ID.
 var vector_values: Dictionary[StringName, Vector2] = {}
+
+## The most recent value for each configured axis ID
+var axis_values: Dictionary[StringName, float] = {}
 
 ## Whether each configured action ID is currently held.
 var action_held_values: Dictionary[StringName, bool] = {}
@@ -129,11 +138,20 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Initializes cached state for configured input bindings.
 func _initialize_state() -> void:
 	vector_values.clear()
+	axis_values.clear()
 	action_held_values.clear()
 	sequence_progress_values.clear()
 	sequence_last_input_time_values.clear()
 	chord_held_values.clear()
-
+	
+	for binding: InputAxisBinding in axis_bindings:
+		if binding == null:
+			continue
+		if binding.axis_id == StringName():
+			continue
+		
+		axis_values[binding.axis_id] = 0.0
+	
 	for binding: InputVectorBinding in vector_bindings:
 		if binding == null:
 			continue
@@ -172,9 +190,27 @@ func _poll_continuous_inputs() -> void:
 		return
 
 	_poll_vectors()
+	_poll_axis()
 	_poll_held_chords()
 	_poll_held_actions()
+	
 
+## Polls all bound axis input bindings
+func _poll_axis() -> void:
+	for binding: InputAxisBinding in axis_bindings:
+		if binding == null:
+			continue
+		if binding.axis_id == StringName():
+			continue
+		
+		var old_value: float = axis_values.get(binding.axis_id, 0.0)
+		
+		var new_value: float = Input.get_axis(binding.negative_action, binding.positive_action)
+		
+		axis_values[binding.axis_id] = new_value
+		
+		if binding.emit_unchanged or not is_equal_approx(old_value, new_value):
+			axis_changed.emit(binding.axis_id, new_value)
 
 ## Polls configured vector bindings.
 func _poll_vectors() -> void:
@@ -549,3 +585,7 @@ func reset_sequence(sequence_id: StringName) -> void:
 func reset_all_sequences() -> void:
 	for sequence_id: StringName in sequence_progress_values.keys():
 		reset_sequence(sequence_id)
+		
+## Returns the latest value for an axis binding.
+func get_axis(axis_id: StringName) -> float:
+	return axis_values.get(axis_id, 0.0)
