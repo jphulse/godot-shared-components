@@ -1,3 +1,4 @@
+## Abstract class of math functions f(x)
 @abstract class_name MathFunction
 extends RefCounted
 

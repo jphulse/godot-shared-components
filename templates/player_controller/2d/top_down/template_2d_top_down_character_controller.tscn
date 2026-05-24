@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dny0yo15kw1lu"]
+
+[ext_resource type="Script" uid="uid://dey2ly2m87727" path="res://addons/jeremy_components/templates/player_controller/2d/top_down/template_2d_top_down_character_controller.gd" id="1_dfx53"]
+[ext_resource type="Script" uid="uid://b1bfrgmtxagyg" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="2_dcvlg"]
+[ext_resource type="Script" uid="uid://cxls2swepry3l" path="res://addons/jeremy_components/components/input/input_bindings/input_vector_binding.gd" id="3_tchst"]
+[ext_resource type="Texture2D" uid="uid://dnevueyixoc1" path="res://addons/jeremy_components/grayboxing_placeholders/sprites/circle_sprite.png" id="4_d2r12"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e6q44"]
+
+[sub_resource type="Resource" id="Resource_d2r12"]
+script = ExtResource("3_tchst")
+vector_id = &"move"
+negative_x_action = &"move_left"
+positive_x_action = &"move_right"
+negative_y_action = &"move_up"
+positive_y_action = &"move_down"
+emit_unchanged = false
+metadata/_custom_type_script = "uid://cxls2swepry3l"
+
+[node name="Character" type="CharacterBody2D" unique_id=924594763]
+motion_mode = 1
+script = ExtResource("1_dfx53")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=57865745]
+shape = SubResource("CircleShape2D_e6q44")
+
+[node name="Components" type="Node" parent="." unique_id=1212800388]
+
+[node name="InputComponent" type="Node" parent="Components" unique_id=2000886140]
+script = ExtResource("2_dcvlg")
+vector_bindings = Array[ExtResource("3_tchst")]([SubResource("Resource_d2r12")])
+
+[node name="CircleSprite" type="Sprite2D" parent="." unique_id=335938837]
+scale = Vector2(0.15999937, 0.16000012)
+texture = ExtResource("4_d2r12")
+
+[connection signal="vector_changed" from="Components/InputComponent" to="." method="_on_input_component_vector_changed"]

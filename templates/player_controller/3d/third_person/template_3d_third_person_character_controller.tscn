@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://hgwd64hvk60m"]
+
+[ext_resource type="Script" uid="uid://bb5wwjpkdep3e" path="res://addons/jeremy_components/templates/player_controller/3d/third_person/template_3d_third_person_character_controller.gd" id="1_yfj88"]
+[ext_resource type="Script" uid="uid://cxxi8cp8sorhj" path="res://addons/jeremy_components/components/componnet_manager/component_manager.gd" id="2_q0fnm"]
+[ext_resource type="Script" uid="uid://b1bfrgmtxagyg" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="3_w2nhl"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfj88"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vdq52"]
+
+[node name="Template3dFirstPersonCharacterController" type="CharacterBody3D" unique_id=1114675940]
+script = ExtResource("1_yfj88")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2141963318]
+shape = SubResource("CapsuleShape3D_yfj88")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1217272215]
+mesh = SubResource("CapsuleMesh_vdq52")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="." unique_id=413157653]
+transform = Transform3D(1, 0, 0, 0, 0.9917698, 0.12803401, 0, -0.12803401, 0.9917698, 0, 0.539223, 0)
+spring_length = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="SpringArm3D" unique_id=1241405277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.87)
+
+[node name="ComponentManager" type="Node" parent="." unique_id=309248662]
+script = ExtResource("2_q0fnm")
+metadata/_custom_type_script = "uid://cxxi8cp8sorhj"
+
+[node name="InputComponent" type="Node" parent="ComponentManager" unique_id=874055639]
+script = ExtResource("3_w2nhl")
+metadata/_custom_type_script = "uid://b1bfrgmtxagyg"

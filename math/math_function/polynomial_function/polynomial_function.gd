@@ -1,3 +1,5 @@
+## Implementation of basic polynomial functions, allows for evaluations, derivative calculations,
+## and finite integrals.  Note that this strictly enforces positive integer exponents
 class_name PolynomialFunction
 extends MathFunction
 

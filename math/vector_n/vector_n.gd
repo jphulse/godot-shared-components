@@ -1,3 +1,5 @@
+## Class designed for custom length vectors, allows for vectors beyond Vector4 to be supported
+## If using vectors of dimension < 4 it is suggested to utilize the built-in engine types
 class_name VectorN
 extends RefCounted
 
