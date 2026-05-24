@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://573lqiuh524l"]
 
 [ext_resource type="Script" uid="uid://dyt23nonldfpr" path="res://addons/jeremy_components/templates/player_controller/2d/platformer/template_2d_character_controller.gd" id="1_sds2e"]
-[ext_resource type="Script" uid="uid://b1bfrgmtxagyg" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="2_f2mdt"]
+[ext_resource type="Script" uid="uid://byv03wv2t5odf" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="2_f2mdt"]
 [ext_resource type="Script" uid="uid://bwxv014o66d1l" path="res://addons/jeremy_components/components/input/input_bindings/input_axis_binding.gd" id="3_5dpe3"]
-[ext_resource type="Script" uid="uid://ck0y4v15a4x8m" path="res://addons/jeremy_components/components/input/input_bindings/input_action_binding.gd" id="3_w0iya"]
+[ext_resource type="Script" uid="uid://p8xfur6efrsn" path="res://addons/jeremy_components/components/input/input_bindings/input_action_binding.gd" id="3_w0iya"]
 [ext_resource type="Texture2D" uid="uid://drs84ogb6saqn" path="res://addons/jeremy_components/grayboxing_placeholders/sprites/capsule.png" id="5_0h43t"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sds2e"]

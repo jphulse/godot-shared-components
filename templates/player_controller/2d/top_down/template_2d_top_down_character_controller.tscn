@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dny0yo15kw1lu"]
 
 [ext_resource type="Script" uid="uid://dey2ly2m87727" path="res://addons/jeremy_components/templates/player_controller/2d/top_down/template_2d_top_down_character_controller.gd" id="1_dfx53"]
-[ext_resource type="Script" uid="uid://b1bfrgmtxagyg" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="2_dcvlg"]
-[ext_resource type="Script" uid="uid://cxls2swepry3l" path="res://addons/jeremy_components/components/input/input_bindings/input_vector_binding.gd" id="3_tchst"]
-[ext_resource type="Texture2D" uid="uid://dnevueyixoc1" path="res://addons/jeremy_components/grayboxing_placeholders/sprites/circle_sprite.png" id="4_d2r12"]
+[ext_resource type="Script" uid="uid://byv03wv2t5odf" path="res://addons/jeremy_components/components/input/input_component/input_component.gd" id="2_dcvlg"]
+[ext_resource type="Script" uid="uid://bsoadp5vytfd4" path="res://addons/jeremy_components/components/input/input_bindings/input_vector_binding.gd" id="3_tchst"]
+[ext_resource type="Texture2D" uid="uid://dyp50m8s1us83" path="res://addons/jeremy_components/grayboxing_placeholders/sprites/circle_sprite.png" id="4_d2r12"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e6q44"]
 

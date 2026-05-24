@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bh5cef04ojb3"]
 
-[ext_resource type="Script" uid="uid://bfrjgsqhorr46" path="res://addons/jeremy_components/components/hitbox_compopnent/hitbox_component_2d/hitbox_component_2d.gd" id="1_hbcac"]
+[ext_resource type="Script" uid="uid://b663w7tex3tof" path="res://addons/jeremy_components/components/hitbox_compopnent/hitbox_component_2d/hitbox_component_2d.gd" id="1_hbcac"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rmqkw"]
 

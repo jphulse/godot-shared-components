@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dka2dqa0vxgf"]
 
-[ext_resource type="Script" uid="uid://o74w2ctqaxlv" path="res://addons/jeremy_components/components/hitbox_compopnent/hitbox_component_3d/hitbox_component_3d.gd" id="1_7fvnl"]
+[ext_resource type="Script" uid="uid://mib3178vlke4" path="res://addons/jeremy_components/components/hitbox_compopnent/hitbox_component_3d/hitbox_component_3d.gd" id="1_7fvnl"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_noyyh"]
 
