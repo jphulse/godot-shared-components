@@ -589,3 +589,32 @@ func reset_all_sequences() -> void:
 ## Returns the latest value for an axis binding.
 func get_axis(axis_id: StringName) -> float:
 	return axis_values.get(axis_id, 0.0)
+	
+## Rebuilds cached input state from the current binding arrays.
+func refresh_bindings() -> void:
+	_initialize_state()
+	
+
+## Enables or disables this input component.
+func set_enabled(value: bool, clear_state_when_disabled: bool = true) -> void:
+	enabled = value
+	
+	if not enabled and clear_state_when_disabled:
+		clear_input_state()
+
+
+## Clears cached held/input state values.
+func clear_input_state() -> void:
+	for action_id: StringName in action_held_values.keys():
+		action_held_values[action_id] = false
+	
+	for chord_id: StringName in chord_held_values.keys():
+		chord_held_values[chord_id] = false
+	
+	for vector_id: StringName in vector_values.keys():
+		vector_values[vector_id] = Vector2.ZERO
+	
+	for axis_id: StringName in axis_values.keys():
+		axis_values[axis_id] = 0.0
+	
+	reset_all_sequences()
