@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://06w51v06ssci"]
 
-[ext_resource type="Script" uid="uid://cf60s55deq1md" path="res://addons/jeremy_components/components/navigation_component/navigation_component_3d/navigation_component_3d.gd" id="1_o4f62"]
+[ext_resource type="Script" uid="uid://cf60s55deq1md" path="res://addons/jeremy_components/components/ai_components/navigation_component/3d/navigation_component_3d.gd" id="1_o4f62"]
 
 [node name="NavigationComponent3d" type="NavigationAgent3D" unique_id=20688378]
 script = ExtResource("1_o4f62")
