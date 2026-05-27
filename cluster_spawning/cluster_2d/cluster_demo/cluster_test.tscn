@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://wk3r0owxtw0b"]
+
+[ext_resource type="Script" uid="uid://ctsbx8jbic2ju" path="res://addons/jeremy_components/cluster_spawning/cluster_2d/convex_polygon_shape_cluster_2d/convex_polygon_shape_cluster_2d.gd" id="1_0726h"]
+[ext_resource type="PackedScene" uid="uid://brg2s86g530p5" path="res://attacks/projectile_attack/projectile.tscn" id="2_e1jy7"]
+[ext_resource type="Script" uid="uid://bjs7b0klu2whs" path="res://addons/jeremy_components/cluster_spawning/cluster_2d/segment_shape_cluster_2d/segment_shape_cluster_2d.gd" id="3_escjf"]
+[ext_resource type="Script" uid="uid://gayv0t3qdeax" path="res://addons/jeremy_components/cluster_spawning/cluster_2d/polygon_perimeter_cluster_2d/polygon_perimeter_cluster_2d.gd" id="4_uc3wj"]
+[ext_resource type="Script" uid="uid://mwohfcnmxg4j" path="res://addons/jeremy_components/cluster_spawning/cluster_2d/polygon_vertex_cluster_2d/polygon_vertex_cluster_2d.gd" id="5_mhfnn"]
+[ext_resource type="Script" uid="uid://bdqv6yddr112o" path="res://addons/jeremy_components/cluster_spawning/cluster_2d/radial_cluster_2d/radial_cluster_2d.gd" id="6_62s0w"]
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_n8b12"]
+points = PackedVector2Array(-50, 0, -20, -60, 0, 20)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_n8b12"]
+a = Vector2(-100, 0)
+b = Vector2(10, 10)
+
+[node name="ClusterTest" type="Node2D" unique_id=1279638507]
+
+[node name="CustomPolygon" type="Node2D" parent="." unique_id=693927677]
+position = Vector2(182, 45)
+script = ExtResource("1_0726h")
+polygon_shape = SubResource("ConvexPolygonShape2D_n8b12")
+instance_scene = ExtResource("2_e1jy7")
+instance_count = 10
+initialization_method_name = &""
+rotation_velocity = 1.0
+expiration_time = -1.0
+
+[node name="LineCluster" type="Node2D" parent="." unique_id=244694122]
+position = Vector2(544, 42)
+script = ExtResource("3_escjf")
+segment_shape = SubResource("SegmentShape2D_n8b12")
+instance_scene = ExtResource("2_e1jy7")
+instance_count = 10
+initialization_method_name = &""
+rotation_velocity = -1.0
+cluster_expansion_speed = 100.0
+expiration_time = -1.0
+
+[node name="PolygonPerimeter" type="Node2D" parent="." unique_id=909504618]
+position = Vector2(342, 244)
+script = ExtResource("4_uc3wj")
+side_count = 12
+instance_scene = ExtResource("2_e1jy7")
+instance_count = 35
+initialization_method_name = &""
+rotation_velocity = 1.0
+expiration_time = -1.0
+
+[node name="PolygonVertex" type="Node2D" parent="." unique_id=2108441889]
+position = Vector2(184, 547)
+script = ExtResource("5_mhfnn")
+instance_scene = ExtResource("2_e1jy7")
+instance_count = 5
+initialization_method_name = &""
+rotation_velocity = -1.0
+expiration_time = -1.0
+
+[node name="RadialCluster" type="Node2D" parent="." unique_id=406117105]
+position = Vector2(962, 551)
+script = ExtResource("6_62s0w")
+instance_scene = ExtResource("2_e1jy7")
+instance_count = 20
+initialization_method_name = &""
+rotation_velocity = 1.0
+cluster_expansion_speed = -100.0
+expiration_time = -1.0
