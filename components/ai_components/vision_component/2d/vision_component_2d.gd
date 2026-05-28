@@ -2,12 +2,12 @@ class_name VisionComponent2D
 extends Area2D
 
 ## Emitted when a target is spotted and aded into the active targets list
-signal target_spotted(target: Target)
+signal target_spotted(target: VisionTarget2D)
 
 ## Emitted when vision of a target has been broke, either by line of sight or by leaving
 ## the area, this will only be emitted if the node was an active target before The target will be
 ## removed from the active targets list when this signal is emitted
-signal target_lost(target: Target)
+signal target_lost(target: VisionTarget2D)
 
 ## The mode used to decide whether this component tracks bodies, areas, or both.
 enum Mode {
@@ -15,46 +15,6 @@ enum Mode {
 	AREAS,
 	BOTH
 }
-
-## Runtime data for a visible target.
-class Target:
-	## The last known position of the target node in global space.
-	var last_known_position: Vector2
-
-	## A reference to the target node.
-	var target: Node2D
-
-
-	## Initializes the target with the given node and its current global position.
-	func _init(target_node: Node2D) -> void:
-		assert(target_node != null, "Target node may not be null.")
-
-		target = target_node
-		last_known_position = target.global_position
-
-
-	## Updates cached target information.
-	func update_target() -> void:
-		if is_instance_valid(target):
-			last_known_position = target.global_position
-
-
-	## Returns true if the target wraps the given node.
-	static func target_equals(active_target: Target, node: Node2D) -> bool:
-		if active_target == null:
-			return false
-
-		if node == null:
-			return false
-
-		if not is_instance_valid(node):
-			return false
-
-		if not is_instance_valid(active_target.target):
-			return false
-
-		return node == active_target.target
-
 
 ## The mode this vision component is operating in.
 @export var mode: Mode = Mode.BODIES:
@@ -114,7 +74,7 @@ class Target:
 var _overlapping_nodes: Array[Node2D] = []
 
 ## The currently visible targets.
-var _active_targets: Array[Target] = []
+var _active_targets: Array[VisionTarget2D] = []
 
 
 func _ready() -> void:
@@ -132,15 +92,15 @@ func get_overlapping_nodes() -> Array[Node2D]:
 
 
 ## Gets a duplicated array of the currently active targets.
-func get_active_targets() -> Array[Target]:
-	return _active_targets.duplicate() as Array[Target]
+func get_active_targets() -> Array[VisionTarget2D]:
+	return _active_targets.duplicate() as Array[VisionTarget2D]
 
 
-## Gets the visible target nodes without exposing the Target wrapper objects.
+## Gets the visible target nodes without exposing the VisionTarget2D wrapper objects.
 func get_active_target_nodes() -> Array[Node2D]:
 	var ret_val: Array[Node2D] = []
 
-	for active_target: Target in _active_targets:
+	for active_target: VisionTarget2D in _active_targets:
 		if active_target != null and is_instance_valid(active_target.target):
 			ret_val.append(active_target.target)
 
@@ -149,7 +109,7 @@ func get_active_target_nodes() -> Array[Node2D]:
 
 ## Returns true if the given node is currently an active visible target.
 func has_active_target(node: Node2D) -> bool:
-	return _active_targets.find_custom(Target.target_equals.bind(node)) >= 0
+	return _active_targets.find_custom(VisionTarget2D.target_equals.bind(node)) >= 0
 
 
 ## Evaluates the overlapping nodes and updates the active target list.
@@ -167,7 +127,7 @@ func evaluate_overlapping_nodes() -> void:
 ## Removes all active targets and emits target_lost for each removed target.
 func clear_targets() -> void:
 	for i: int in range(_active_targets.size() - 1, -1, -1):
-		var active_target: Target = _active_targets[i]
+		var active_target: VisionTarget2D = _active_targets[i]
 		target_lost.emit(active_target)
 		_active_targets.remove_at(i)
 
@@ -189,23 +149,23 @@ func get_line_of_sight_origin() -> Vector2:
 
 ## Adds or updates a node in the active target list.
 func _add_or_update_target(node: Node2D) -> void:
-	var idx: int = _active_targets.find_custom(Target.target_equals.bind(node))
+	var idx: int = _active_targets.find_custom(VisionTarget2D.target_equals.bind(node))
 
 	if idx >= 0:
 		_active_targets[idx].update_target()
 		return
 
-	var new_target: Target = Target.new(node)
+	var new_target: VisionTarget2D = VisionTarget2D.new(node)
 	_active_targets.append(new_target)
 	target_spotted.emit(new_target)
 
 
 ## Removes a node from the active target list.
-func _remove_target(node: Node2D) -> Target:
-	var ret_val: Target = null
+func _remove_target(node: Node2D) -> VisionTarget2D:
+	var ret_val: VisionTarget2D = null
 
 	for i: int in range(_active_targets.size() - 1, -1, -1):
-		var active_target: Target = _active_targets[i]
+		var active_target: VisionTarget2D = _active_targets[i]
 
 		if active_target == null:
 			_active_targets.remove_at(i)
@@ -335,7 +295,7 @@ func _prune_invalid_overlapping_nodes() -> void:
 ## Removes invalid targets from the active target list.
 func _prune_invalid_active_targets() -> void:
 	for i: int in range(_active_targets.size() - 1, -1, -1):
-		var active_target: Target = _active_targets[i]
+		var active_target: VisionTarget2D = _active_targets[i]
 
 		if active_target == null:
 			_active_targets.remove_at(i)
